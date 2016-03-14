@@ -1,0 +1,40 @@
+---
+- hosts: all
+  vars:
+  become: true
+  become_user: root
+  tasks:
+  - name: updates a server
+    apt: update_cache=yes
+  - name: upgrade a server
+    apt: upgrade=full
+  - name: install packages
+    apt: pkg={{ item }} state=installed
+    with_items:
+    - git
+    - python-dev
+    - python-pip
+  - name: get docker install script
+    shell: curl -sSL https://get.docker.com/ > docker.sh
+  - name: install docker from docker script
+    command: /bin/sh docker.sh creates=/etc/docker/key.json
+  - name: get kubernets git repo
+    git: repo=https://github.com/kubernetes/kubernetes dest=/root/kubernetes
+- hosts: master
+  become: true
+  become_user: root
+  tasks:
+  - name: run setup script
+    shell: "K8S_VERSION=1.2.0-beta.1 MASTER_IP={{hostvars['kube-master.opsits.com']['ansible_eth0']['ipv4']['address']}} ./master.sh"
+    args:
+      chdir: /root/kubernetes/docs/getting-started-guides/docker-multinode/
+      executable: /bin/bash
+- hosts: minion
+  become: true
+  become_user: root
+  tasks:
+  - name: run setup script
+    shell: "K8S_VERSION=1.2.0-beta.1 MASTER_IP={{hostvars['kube-master.opsits.com']['ansible_eth0']['ipv4']['address']}} ./worker.sh"
+    args:
+      chdir: /root/kubernetes/docs/getting-started-guides/docker-multinode/
+      executable: /bin/bash
