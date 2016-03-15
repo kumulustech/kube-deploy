@@ -1,0 +1,11 @@
+---
+- name: upgrade a server
+  yum: name=* state=latest
+- name: install packages
+  yum: name={{ item }} state=installed
+  with_items:
+  - git
+  - epel-release
+  - python-devel
+- name: install pip
+  yum: name=python-pip state=installed
