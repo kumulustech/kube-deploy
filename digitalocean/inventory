@@ -1,0 +1,7 @@
+[master]
+do-master.opsits.com ansible_connection=ssh ansible_ssh_user=root
+[minion]
+do-minion-1.opsits.com ansible_connection=ssh ansible_ssh_user=root
+do-minion-2.opsits.com ansible_connection=ssh ansible_ssh_user=root
+[client]
+do-client-1.opsits.com ansible_connection=ssh ansible_ssh_user=root

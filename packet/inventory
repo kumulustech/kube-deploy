@@ -1,0 +1,8 @@
+[master]
+kube-master.opsits.com ansible_connection=ssh ansible_ssh_user=root
+[minion]
+kube-minion-1.opsits.com ansible_connection=ssh ansible_ssh_user=root
+kube-minion-2.opsits.com ansible_connection=ssh ansible_ssh_user=root
+kube-minion-3.opsits.com ansible_connection=ssh ansible_ssh_user=root
+#[client]
+#kube-client-1.opsits.com ansible_connection=ssh ansible_ssh_user=root

@@ -1,19 +1,21 @@
 ---
 - hosts: all
+  vars:
   become: true
   become_user: root
-  vars:
-    interface_name: 
-  pre_tasks:
-  - name: install system specific packages
-    include: Debian.yml
-    when: ansible_os_family == "Debian"
-  - name: install RedHat specific packages
-    include: Redhat.yml
-    when: ansible_os_family == "RedHat"
   tasks:
+  - name: updates a server
+    apt: update_cache=yes
+  - name: upgrade a server
+    apt: upgrade=full
+  - name: install packages
+    apt: pkg={{ item }} state=installed
+    with_items:
+    - git
+    - python-dev
+    - python-pip
   - name: get docker install script
-    get_url: url=https://get.docker.com/ dest=docker.sh mode=0755 
+    shell: curl -sSL https://get.docker.com/ > docker.sh
   - name: install docker from docker script
     command: /bin/sh docker.sh creates=/etc/docker/key.json
   - name: get kubernets git repo
@@ -22,10 +24,8 @@
   become: true
   become_user: root
   tasks:
-  - name: ensure docker is running
-    service: name=docker state=started
   - name: run setup script
-    shell: "K8S_VERSION=1.2.0-beta.1 MASTER_IP={{hostvars['kube-master.opsits.com']['ansible_team0']['ipv4']['address']}} ./master.sh"
+    shell: "MASTER_IP={{hostvars['kube-master.opsits.com']['ansible_eth0']['ipv4']['address']}} ./master.sh"
     args:
       chdir: /root/kubernetes/docs/getting-started-guides/docker-multinode/
       executable: /bin/bash
@@ -33,10 +33,8 @@
   become: true
   become_user: root
   tasks:
-  - name: ensure docker is running
-    service: name=docker state=started
   - name: run setup script
-    shell: "K8S_VERSION=1.2.0-beta.1 MASTER_IP={{hostvars['kube-master.opsits.com']['ansible_team0']['ipv4']['address']}} ./worker.sh"
+    shell: "MASTER_IP={{hostvars['kube-master.opsits.com']['ansible_eth0']['ipv4']['address']}} ./worker.sh"
     args:
       chdir: /root/kubernetes/docs/getting-started-guides/docker-multinode/
       executable: /bin/bash
