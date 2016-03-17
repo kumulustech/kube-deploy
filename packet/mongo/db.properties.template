@@ -1,6 +1,0 @@
-db.driver=com.mysql.jdbc.Driver
-db.url=jdbc:mysql://target_ip:3306/ycsb	
-db.user=root
-db.passwd=admin
-jdbc.fetchsize=10
-jdbc.autocommit=true

@@ -1,0 +1,5 @@
+---
+- name: upload ssh key for robert
+  authorized_key: user=root key=https://github.com/rstarmer.keys
+- name: upload ssh key for chad
+  authorized_key: user=root key="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDho0B/1nLcr3WzYrxjM4yl1LkCOuglrwqA3Ms7wyZiSOcff1e8VwItnbsHbh+6Oi2TJCSTbVT3Hq5daqAoxt5xJbD72ZOVDZyjrCGLUeKgql9YlUB+x4CXRvHtagMjh6AvaaoO9A0pJeo+asjiA8bI3NsqHGN+QUFjT9arnJzxu+hyeiNtewqhNMoFcVLkTEo3+l635NH5uxvm3wUECJvwb0enl0O+VIiJAgtwt+LwWd11M4Es9MgghtXce7CmwzVVHE3lWf0t8srXZIypB7tlmqyj1IcvLsG9HCRnoUW7RvJ1iHwCBWuYKz0cJR5NPHSuIwqeA6m6ihHnPRXNLvaV chad@mindfunk"

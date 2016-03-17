@@ -11,6 +11,10 @@
   - name: install RedHat specific packages
     include: Redhat.yml
     when: ansible_os_family == "RedHat"
+  - name: get the hostnames configured properly
+    include: hosts.yml
+  - name: set up additionl ssh authorized_keys
+    includ: keys.yml
   tasks:
 #  - name: get docker install script
 #    get_url: url=https://get.docker.com/ dest=docker.sh mode=0755 validate_certs=False
@@ -43,6 +47,8 @@
     copy: src=./skydns.yaml dest=/root/skydns.yaml mode=0755
   - name: enable DNS service
     command: kubectl create -f ./skydns.yaml
+  - name: install ycsb
+    include: ycsb.yml
 - hosts: minion
   become: true
   become_user: root
