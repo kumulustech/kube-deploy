@@ -13,3 +13,5 @@
   - mongodb-clients
   - screen
   - jq
+  - sysstat
+  - vim

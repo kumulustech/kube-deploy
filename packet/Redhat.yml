@@ -8,7 +8,11 @@
   - epel-release
   - python-devel
   - ntp
-  - mongodb-org-shell
+  - mongodb
+  - screen
+  - jq
+  - sysstat
+  - vim
 - name: install pip
   yum: name=python-pip state=installed
 - name: disable firewalld

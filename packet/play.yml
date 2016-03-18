@@ -14,7 +14,7 @@
   - name: get the hostnames configured properly
     include: hosts.yml
   - name: set up additionl ssh authorized_keys
-    includ: keys.yml
+    include: keys.yml
   tasks:
 #  - name: get docker install script
 #    get_url: url=https://get.docker.com/ dest=docker.sh mode=0755 validate_certs=False
