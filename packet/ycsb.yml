@@ -1,22 +1,20 @@
 ---
-- hosts: master
-  tasks:
-  - name: install maven and java for Debian/Ubuntu
-    apt: pkg={{ item }} state=installed
-    with_items:
-    - maven
-    - mysql-server
-    - libmysql-java
-    when: ansible_os_family == "Debian"
-  - name: install maven and java for RedHat
-    yum: name={{ item }} state=installed
-    with_items:
-    - apache-maven
-    - java-devel
-    - mysql
-    - mysql-connector-java
-    when: ansible_os_family == "RedHat"
-  - name: get YCSB (0.7.0)
-    shell: curl -O --location https://github.com/brianfrankcooper/YCSB/releases/download/0.7.0/ycsb-0.7.0.tar.gz creates=./ycsb-0.7.0.tar.gz
-  - name: extract ycsb tools
-    command: tar xfz ycsb-0.7.0.tar.gz creates=./ycsb-0.7.0
+- name: install maven and java for Debian/Ubuntu
+  apt: pkg={{ item }} state=installed
+  with_items:
+  - maven
+  - mysql-server
+  - libmysql-java
+  when: ansible_os_family == "Debian"
+- name: install maven and java for RedHat
+  yum: name={{ item }} state=installed
+  with_items:
+  - apache-maven
+  - java-devel
+  - mysql
+  - mysql-connector-java
+  when: ansible_os_family == "RedHat"
+- name: get YCSB (0.7.0)
+  shell: curl -O --location https://github.com/brianfrankcooper/YCSB/releases/download/0.7.0/ycsb-0.7.0.tar.gz creates=./ycsb-0.7.0.tar.gz
+- name: extract ycsb tools
+  command: tar xfz ycsb-0.7.0.tar.gz creates=./ycsb-0.7.0
