@@ -8,14 +8,20 @@
     include: Redhat.yml
     when: ansible_os_family == "RedHat"
   tasks:
-#  - name: get docker install script
-#    get_url: url=https://get.docker.com/ dest=docker.sh mode=0755 validate_certs=False
   - name: get docker install script
     shell: curl -sSL https://get.docker.com > ./docker.sh creates=/root/docker.sh
+  - name: install docker from docker script
+    command: /bin/sh docker.sh creates=/etc/docker/key.json
+  - name: get kubernets git repo
+    git: repo=https://github.com/kubernetes/kubernetes dest=/root/kubernetes
 - hosts: minion
   become: true
   become_user: root
   tasks:
+  - name: ensure hosts files are right
+    include: hosts.yml
+  - name: add ssh keys
+    include: keys.yml
   - name: ensure docker is running
     service: name=docker state=started
   - name: run setup script
