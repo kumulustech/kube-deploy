@@ -52,6 +52,10 @@
     args:
       chdir: /root/kubernetes/docs/getting-started-guides/docker-multinode/
       executable: /bin/bash
+  - name: upload disk partition script
+    copy: src=./sfdisk-nvme.sh dest=/root/sfdisk-nvme.sh mode=0755
+  - name: partition disks
+    command: /root/sfdisk-nvme.sh creates=/mnt/nvme1
 - hosts: master
   become: true
   become_user: root
@@ -62,7 +66,3 @@
     command: kubectl create -f ./skydns.yaml
   - name: install ycsb
     include: ycsb.yml
-  - name: upload disk partition script
-    copy: src=./sfdisk-nvme.sh dest=/root/sfdisk-nvme.sh mode=0755
-  - name: partition disks
-    script: /root/sfdisk-nvme.sh creates=/mnt/nvme1
