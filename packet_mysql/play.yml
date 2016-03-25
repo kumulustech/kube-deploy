@@ -1,0 +1,69 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  vars:
+    interface_name:
+  pre_tasks:
+  - name: install system specific packages
+    include: Debian.yml
+    when: ansible_os_family == "Debian"
+  - name: install RedHat specific packages
+    include: Redhat.yml
+    when: ansible_os_family == "RedHat"
+  - name: get the hostnames configured properly
+    include: hosts.yml
+  - name: set up additionl ssh authorized_keys
+    include: keys.yml
+  tasks:
+  - name: get docker install script
+    shell: curl -sSL https://get.docker.com > ./docker.sh creates=/root/docker.sh
+  - name: install docker from docker script
+    command: /bin/sh docker.sh creates=/etc/docker/key.json
+  - name: get kubernets git repo
+    git: repo=https://github.com/kubernetes/kubernetes dest=/root/kubernetes
+- hosts: master
+  become: true
+  become_user: root
+  tasks:
+  - name: ensure docker is running
+    service: name=docker state=started
+  - name: run setup script
+    shell: "FLANNEL_IFACE=bond0 K8S_VERSION=1.2.0-beta.1 MASTER_IP={{hostvars['sql-master.opsits.com']['ansible_bond0']['ipv4']['address']}} ./master.sh"
+    args:
+      chdir: /root/kubernetes/docs/getting-started-guides/docker-multinode/
+      executable: /bin/bash
+      creates: /var/lib/docker-bootstrap
+  - name: copy kubectl script
+    copy: src=./get_kubectl.sh dest=/root/get_kubectl.sh mode=0755
+  - name: copy kubectl config script
+    copy: src=./kube_connect.sh dest=/root/kube_connect.sh mode=0755
+  - name: get kubectl
+    script: ./get_kubectl.sh creates=/usr/local/bin/kubectl
+  - name: configure kubectl
+    script: ./kube_connect.sh sql-master.opsits.com creates=/root/.kube/config
+- hosts: minion
+  become: true
+  become_user: root
+  tasks:
+  - name: ensure docker is running
+    service: name=docker state=started
+  - name: run setup script
+    shell: "FLANNEL_IFACE=bond0 K8S_VERSION=1.2.0-beta.1 MASTER_IP={{hostvars['sql-master.opsits.com']['ansible_bond0']['ipv4']['address']}} ./worker.sh"
+    args:
+      chdir: /root/kubernetes/docs/getting-started-guides/docker-multinode/
+      executable: /bin/bash
+  - name: upload disk partition script
+    copy: src=./sfdisk-nvme.sh dest=/root/sfdisk-nvme.sh mode=0755
+  - name: partition disks
+    command: /root/sfdisk-nvme.sh creates=/mnt/nvme1
+- hosts: master
+  become: true
+  become_user: root
+  tasks:
+  - name: get skydns service description
+    copy: src=./skydns.yaml dest=/root/skydns.yaml mode=0755
+  - name: enable DNS service
+    command: kubectl create -f ./skydns.yaml
+  - name: install ycsb
+    include: ycsb.yml

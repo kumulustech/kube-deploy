@@ -1,0 +1,7 @@
+---
+- hosts: minion
+  tasks:
+  - name: upload disk partition script
+    copy: src=./sfdisk-nvme.sh dest=/root/sfdisk-nvme.sh mode=0755
+  - name: partition disks
+    command: /root/sfdisk-nvme.sh creates=/mnt/nvme1
