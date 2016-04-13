@@ -9,7 +9,7 @@
 - name: install maven and java for RedHat
   yum: name={{ item }} state=installed
   with_items:
-  - apache-maven
+  - maven
   - java-devel
   - mysql
   - mysql-connector-java

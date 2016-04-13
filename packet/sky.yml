@@ -1,0 +1,10 @@
+- hosts: master
+  become: true
+  become_user: root
+  tasks:
+  - name: get skydns service description
+    copy: src=./skydns.yaml dest=/root/skydns.yaml mode=0755
+  - name: enable DNS service
+    command: kubectl create -f ./skydns.yaml
+  - name: install ycsb
+    include: ycsb.yml

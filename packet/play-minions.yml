@@ -7,6 +7,10 @@
   - name: install RedHat specific packages
     include: Redhat.yml
     when: ansible_os_family == "RedHat"
+  - name: copy cleanup script
+    copy: src=./cleanup_minion.sh dest=/root/cleanup_minion.sh mode=0755
+  - name: add an alias for bootstrap docker to .bashrc
+    lineinfile: dest=/root/.bashrc insertafter="^alias" line="alias dbs='docker -H unix:///var/run/docker-bootstrap.sock'"
   tasks:
   - name: get docker install script
     shell: curl -sSL https://get.docker.com > ./docker.sh creates=/root/docker.sh

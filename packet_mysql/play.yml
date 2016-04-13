@@ -20,20 +20,19 @@
     shell: curl -sSL https://get.docker.com > ./docker.sh creates=/root/docker.sh
   - name: install docker from docker script
     command: /bin/sh docker.sh creates=/etc/docker/key.json
-  - name: get kubernets git repo
-    git: repo=https://github.com/kubernetes/kubernetes dest=/root/kubernetes
 - hosts: master
   become: true
   become_user: root
   tasks:
   - name: ensure docker is running
     service: name=docker state=started
+  - name: copy master.sh script to master node
+    copy: src=./master.sh dest=/root/master.sh mode=0755
   - name: run setup script
-    shell: "FLANNEL_IFACE=bond0 K8S_VERSION=1.2.0-beta.1 MASTER_IP={{hostvars['sql-master.opsits.com']['ansible_bond0']['ipv4']['address']}} ./master.sh"
+    shell: "FLANNEL_IFACE=eth0 K8S_VERSION=1.2.0 MASTER_IP={{hostvars['master.opsits.com']['ansible_eth0']['ipv4']['address']}} ./master.sh"
     args:
-      chdir: /root/kubernetes/docs/getting-started-guides/docker-multinode/
       executable: /bin/bash
-      creates: /var/lib/docker-bootstrap
+      creates: /etc/systemd/system/docker.service.d/flannel-subnet.conf
   - name: copy kubectl script
     copy: src=./get_kubectl.sh dest=/root/get_kubectl.sh mode=0755
   - name: copy kubectl config script
@@ -41,22 +40,20 @@
   - name: get kubectl
     script: ./get_kubectl.sh creates=/usr/local/bin/kubectl
   - name: configure kubectl
-    script: ./kube_connect.sh sql-master.opsits.com creates=/root/.kube/config
+    script: ./kube_connect.sh master.opsits.com creates=/root/.kube/config
 - hosts: minion
   become: true
   become_user: root
   tasks:
   - name: ensure docker is running
     service: name=docker state=started
+  - name: copy worker.sh script to worker node
+    copy: src=./worker.sh dest=/root/worker.sh mode=0755
   - name: run setup script
-    shell: "FLANNEL_IFACE=bond0 K8S_VERSION=1.2.0-beta.1 MASTER_IP={{hostvars['sql-master.opsits.com']['ansible_bond0']['ipv4']['address']}} ./worker.sh"
+    shell: "FLANNEL_IFACE=eth0 K8S_VERSION=1.2.2 MASTER_IP={{hostvars['master.opsits.com']['ansible_eth0']['ipv4']['address']}} ./worker.sh"
     args:
-      chdir: /root/kubernetes/docs/getting-started-guides/docker-multinode/
       executable: /bin/bash
-  - name: upload disk partition script
-    copy: src=./sfdisk-nvme.sh dest=/root/sfdisk-nvme.sh mode=0755
-  - name: partition disks
-    command: /root/sfdisk-nvme.sh creates=/mnt/nvme1
+      creates: /etc/systemd/system/docker.service.d/flannel-subnet.conf
 - hosts: master
   become: true
   become_user: root

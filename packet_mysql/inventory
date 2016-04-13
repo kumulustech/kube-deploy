@@ -1,6 +1,4 @@
 [master]
-sql-master.opsits.com ansible_connection=ssh ansible_ssh_user=root
+master.opsits.com ansible_connection=ssh ansible_ssh_user=root
 [minion]
-sql-minion-1.opsits.com ansible_connection=ssh ansible_ssh_user=root
-sql-minion-2.opsits.com ansible_connection=ssh ansible_ssh_user=root
-sql-minion-3.opsits.com ansible_connection=ssh ansible_ssh_user=root
+minion-1.opsits.com ansible_connection=ssh ansible_ssh_user=root

@@ -10,7 +10,7 @@
 # create a master device resoruce in packet.net
 resource "packet_device" "kube-master" {
         hostname = "kube-master"
-        plan = "baremetal_1"
+        plan = "baremetal_3"
         facility = "ewr1"
 	operating_system = "ubuntu_14_04"
         billing_cycle = "hourly"
@@ -26,22 +26,22 @@ resource "packet_device" "kube-minion-1" {
         billing_cycle = "hourly"
         project_id = "4595f2d8-047a-4718-a581-7565657c1bfc"
 }
-resource "packet_device" "kube-minion-2" {
-        hostname = "kube-minion-2"
-        plan = "baremetal_3"
-        facility = "ewr1"
-	operating_system = "ubuntu_14_04"
-        billing_cycle = "hourly"
-        project_id = "4595f2d8-047a-4718-a581-7565657c1bfc"
-}
-resource "packet_device" "kube-minion-3" {
-        hostname = "kube-minion-3"
-        plan = "baremetal_3"
-        facility = "ewr1"
-	operating_system = "ubuntu_14_04"
-        billing_cycle = "hourly"
-        project_id = "4595f2d8-047a-4718-a581-7565657c1bfc"
-}
+#resource "packet_device" "kube-minion-2" {
+#        hostname = "kube-minion-2"
+#        plan = "baremetal_3"
+#        facility = "ewr1"
+#	operating_system = "ubuntu_14_04"
+#        billing_cycle = "hourly"
+#        project_id = "4595f2d8-047a-4718-a581-7565657c1bfc"
+#}
+#resource "packet_device" "kube-minion-3" {
+#        hostname = "kube-minion-3"
+#        plan = "baremetal_3"
+#        facility = "ewr1"
+#	operating_system = "ubuntu_14_04"
+#        billing_cycle = "hourly"
+#        project_id = "4595f2d8-047a-4718-a581-7565657c1bfc"
+#}
 #resource "packet_device" "kube-minion-4" {
 #        hostname = "kube-minion-4"
 #        plan = "baremetal_3"
@@ -77,19 +77,19 @@ resource "digitalocean_record" "kube-minion-1" {
     value = "${packet_device.kube-minion-1.network.0.address}"
 }
 
-resource "digitalocean_record" "kube-minion-2" {
-    domain = "opsits.com"
-    type = "A"
-    name = "kube-minion-2"
-    value = "${packet_device.kube-minion-2.network.0.address}"
-}
-
-resource "digitalocean_record" "kube-minion-3" {
-    domain = "opsits.com"
-    type = "A"
-    name = "kube-minion-3"
-    value = "${packet_device.kube-minion-3.network.0.address}"
-}
+#resource "digitalocean_record" "kube-minion-2" {
+#    domain = "opsits.com"
+#    type = "A"
+#    name = "kube-minion-2"
+#    value = "${packet_device.kube-minion-2.network.0.address}"
+#}
+#
+#resource "digitalocean_record" "kube-minion-3" {
+#    domain = "opsits.com"
+#    type = "A"
+#    name = "kube-minion-3"
+#    value = "${packet_device.kube-minion-3.network.0.address}"
+#}
 
 #resource "digitalocean_record" "kube-minion-4" {
 #    domain = "opsits.com"

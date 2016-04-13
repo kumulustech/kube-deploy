@@ -1,19 +1,20 @@
 ---
 - name: upgrade a server
   yum: name=* state=latest
+- name: install epel-release
+  yum: name=epel-release state=installed
 - name: install packages
   yum: name={{ item }} state=installed
   with_items:
   - git
-  - epel-release
   - python-devel
   - ntp
   - mongodb
+  - mysql
   - screen
   - jq
   - sysstat
+  - wget
   - vim
 - name: install pip
   yum: name=python-pip state=installed
-- name: disable firewalld
-  service: name=firewalld enabled=no state=stopped

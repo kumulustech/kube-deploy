@@ -1,0 +1,12 @@
+---
+- hosts: all
+  pre_tasks:
+  - name: install system specific packages
+    include: Debian.yml
+    when: ansible_os_family == "Debian"
+  - name: install RedHat specific packages
+    include: Redhat.yml
+    when: ansible_os_family == "RedHat"
+  tasks:
+  - name: install ycsb
+    include: ycsb.yml
