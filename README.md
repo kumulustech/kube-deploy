@@ -4,11 +4,13 @@ This set of tools helps to deploy a Kubernetes (1.2.2 at the moment) service
 as Docker containers with a "bootstrap" docker instance (accessible only via
   a socket interface) and a "public" docker instance that is managed by Kubernetes.
 
+
 It uses the master and worker model in the kubernetes getting started model which
 has been modified to support deploying and configuring docker on CentOS as
 well as Ubuntu.  CentOS 7 seems to handle Docker service startup differently
 than the scripts expect, so modifications were need to ensure that the embedded
 Flannel network is properly configured and brought online.
+
 
 As this system is being built specifically to support testing and validating
 databases on containers (and testing different storage) there are some scripts
@@ -19,19 +21,22 @@ and packet-block-storage-detach scripts need to be used, and a "master" scripts
 has not yet been created to format and mount the disks, but it is a trivial
 script to create.
 
+
 There is one file "missing" from this repository, specifically for use with
 the terraform script. It is a script that sets the environment variables for
 API access to packet.net (servers and eventually storage), and digital ocean (DNS)
 
+
 Note that other providers could be used for DNS, but digital ocean was convenient
 for this initial test effort.
 
+
 The script (perhaps call it packet_do.api) should looks something like:
 
-#!/bin/bash
-echo "this file should be sourced, not run; e.g. \"source $0\""
-export PACKET_AUTH_TOKEN=packetauthtokenpacketauthtokenpacketauthtoken
-export DIGITALOCEAN_TOKEN=doauthtokendoauthtokendoauthtokendoauthtokendoauthtoken
+    #!/bin/bash
+    echo "this file should be sourced, not run; e.g. \"source $0\""
+    export PACKET_AUTH_TOKEN=packetauthtokenpacketauthtokenpacketauthtoken
+    export DIGITALOCEAN_TOKEN=doauthtokendoauthtokendoauthtokendoauthtokendoauthtoken
 
 
 After that, the process should be:
